@@ -543,29 +543,39 @@ host %(hostname)s {
 #: the bootloader
 pos_cmdline_opts = {
     'tcf-live':  [
-        # no 'single' so it force starts getty on different ports
-        # this needs an initrd
-        "initrd=%(pos_http_url_prefix)sinitramfs-%(pos_image)s ",
-        # needed by Fedora running as live FS hack
-        "rd.live.image", "selinux=0", "audit=0",
-        # ip=dhcp so we get always the same IP address and NFS root
-        # info (in option root-path when writing the DHCP config file
-        # a few lines above in _dhcp_conf_write()); thus nfsroot
-        # defers to whatever we are given over DHCP, which has all the
-        # protocol and version settings
-        #
-        # IP specification is needed so the kernel acquires an IP address
-        # and can syslog/nfsmount, etc Note we know the fields from the
-        # target's configuration, as they are pre-assigned
-        "ip=dhcp",        
-        "root=/dev/nfs",		# we are NFS rooted
-        # no exotic storage options
-        "rd.luks=0", "rd.lvm=0", "rd.md=0", "rd.dm=0", "rd.multipath=0",
-        "ro",				# we are read only
-        "plymouth.enable=0 ",		# No installer to run
-        "loglevel=2",			# kernel, be quiet to avoid
-        				# your messages polluting the
-                                        # serial terminal
+        ## no 'single' so it force starts getty on different ports
+        ## this needs an initrd
+        #"initrd=%(pos_http_url_prefix)sinitramfs-%(pos_image)s ",
+        ## needed by Fedora running as live FS hack
+        #"rd.live.image", "selinux=0", "audit=0",
+        ## ip=dhcp so we get always the same IP address and NFS root
+        ## info (in option root-path when writing the DHCP config file
+        ## a few lines above in _dhcp_conf_write()); thus nfsroot
+        ## defers to whatever we are given over DHCP, which has all the
+        ## protocol and version settings
+        ##
+        ## IP specification is needed so the kernel acquires an IP address
+        ## and can syslog/nfsmount, etc Note we know the fields from the
+        ## target's configuration, as they are pre-assigned
+        #"ip=dhcp",        
+        #"root=/dev/nfs",		# we are NFS rooted
+        ## no exotic storage options
+        #"rd.luks=0", "rd.lvm=0", "rd.md=0", "rd.dm=0", "rd.multipath=0",
+        #"ro",				# we are read only
+        #"plymouth.enable=0 ",		# No installer to run
+        #"loglevel=2",			# kernel, be quiet to avoid
+        #				# your messages polluting the
+        #                                # serial terminal
+       "kernel",
+       "linux",
+       "root=/dev/nfs",
+       "initrd=%(pos_http_url_prefix)sinitramfs-%(pos_image)s ", 
+       "init=/usr/lib/systemd/systemd-bootchart",
+       "initcall_debug",
+       "tsc=reliable", 
+       "no_timer_check", 
+       "noreplace-smp", 
+       "rw"
     ]
 }
 
